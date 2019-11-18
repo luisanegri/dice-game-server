@@ -31,6 +31,24 @@ router.post(
 )
 
 
+//List of Rooms 
+router.get(
+  '/room',
+  (request, response, next) => {
+    // const messages = { a: 1, b: 2 }
+    const roomsList = Object.keys(rooms)
+    // rooms === ['a', 'b']
+
+    const string = JSON
+      .stringify(roomsList)
+
+    stream.updateInit(string)
+
+    stream.init(request, response)
+    
+  }
+)
+
 
 
 
