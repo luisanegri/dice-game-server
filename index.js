@@ -1,14 +1,19 @@
 const express = require('express');
 const app = express();
-const db = require('./db')
-const user = require('./user/model')
+const bodyParser= require('body-parser')
+const parser = bodyParser.json()
+
 const userRouter = require('./user/router')
 const port = process.env.PORT || 4000;
 
+
+app.use(parser)
 app.use(userRouter)
 app.get('/', (req, res, next) => {
   res.send('Hola')
 })
+
+
 
 
 
