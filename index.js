@@ -1,9 +1,12 @@
 const express = require('express');
 const app = express();
+const db = require('./db')
+const user = require('./user/model')
+const userRouter = require('./user/router')
 const port = process.env.PORT || 4000;
 
-
-app.get('/', (re, res, next) => {
+app.use(userRouter)
+app.get('/', (req, res, next) => {
   res.send('Hola')
 })
 
