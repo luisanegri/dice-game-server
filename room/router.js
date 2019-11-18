@@ -21,10 +21,4 @@ return router
 
 
 
-
-
-
-
-
-
 module.exports = roomFactory
