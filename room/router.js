@@ -1,5 +1,5 @@
-const { Router } = require('express')
-const Room = require('./model')
+const { Router } = require('express');
+const Room = require('./model');
 
 function roomFactory(stream) {
   const router = new Router()
@@ -59,4 +59,4 @@ function roomFactory(stream) {
   return router
 }
 
-module.exports = roomFactory
+module.exports = roomFactory;
