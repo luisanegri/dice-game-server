@@ -4,15 +4,18 @@ const Room = require('./model');
 function roomFactory(stream) {
   const router = new Router();
   ///Create Room route
-  router.post('/room', (request, response, next) => {
-    Room.create(request.body).then(() => {
-      Room.findAll().then(rooms => {
-        console.log({ allRooms: rooms.map(r => r.dataValues) });
-        stream.send(rooms);
-      });
-      //console.log({ roomData: room });
-      //response.send(room);
-    });
+  router.post('/room', async (request, response, next) => {
+    const room = await Room.create(request.body);
+
+    const action = {
+      type: 'ROOM',
+      payload: room
+    };
+
+    const string = JSON.stringify(action);
+
+    stream.send(string);
+    response.send(room);
   });
   return router;
 }
