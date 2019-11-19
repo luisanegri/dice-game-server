@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const parser = bodyParser.json();
 const JwtRouter = require('./auth/router');
 const userRouter = require('./user/router');
+const User = require ('./user/model')
 const Sse = require('json-sse');
 const roomFactory = require('./room/router');
 const Room = require('./room/model');
@@ -31,10 +32,12 @@ app.use(userRouter)
 app.get(
   '/stream',
   async (request, response) => {
-    const rooms = await Room.findAll()
+    const rooms = await Room.findAll({
+      include:[User]
+    })
 
     const action = {
-      type: 'ROOMS',
+      type: 'UPDATE_ROOMS',
       payload: rooms
     }
 

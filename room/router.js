@@ -33,7 +33,7 @@ function roomFactory(stream) {
       const user = await User
         .findByPk(userId)
 
-      console.log('user test:', user)
+      
 
       // If you use the auth middleware, you only need this
       // const { user } = request
