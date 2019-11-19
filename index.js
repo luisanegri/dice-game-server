@@ -34,8 +34,8 @@ app.get(
   '/stream',
   (request, response, next) => {
     stream.init(request, response)
-    
-  }
+   
+  } 
 )
 
 
