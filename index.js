@@ -24,6 +24,7 @@ app.use(userRouter);
 // List of Rooms
 app.get('/stream', async (request, response, next) => {
   const rooms = await Room.findAll();
+  //console.log({ listOfrooms: rooms });
   const action = {
     type: 'UPDATE_ROOMS',
     payload: rooms
