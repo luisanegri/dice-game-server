@@ -32,8 +32,18 @@ app.use(userRouter)
 // //List of Rooms 
 app.get(
   '/stream',
-  (request, response, next) => {
-    stream.init(request, response)
+  async (request, response) => {
+    const rooms = await Room.findAll()
+
+    const action = {
+      type: 'ROOMS',
+      payload: rooms
+    }
+
+    const string = JSON
+      .stringify(action)
+
+    stream.updateInit(string)
    
   } 
 )

@@ -1,24 +1,62 @@
 const { Router } = require('express')
 const Room = require('./model')
 
-function roomFactory(stream){
+function roomFactory(stream) {
   const router = new Router()
-///Create Room route
-router.post(
-  '/room',
-  (request, response, next) => {
-    Room
-    .create(request.body)
-    .then(room => {
-      const data = JSON.stringify(room)
-      stream.send(data)
+
+  router.post(
+    '/room',
+    async (request, response) => {
+      const room = await Room
+        .create(request.body)
+
+      const action = {
+        type: 'ROOM',
+        payload: room
+      }
+
+      const string = JSON
+        .stringify(action)
+
+      stream.send(string)
+
+      // Just for testing
       response.send(room)
-    })
-  }
-)
-return router
+    }
+  )
+
+  router.put(
+    '/join/:name',
+    async (request, response, next) => {
+      const userId = 1
+
+      const user = await User
+        .findByPk(userId)
+
+      console.log('user test:', user)
+
+      // If you use the auth middleware, you only need this
+      // const { user } = request
+      //
+
+      if (!user) {
+        return next('No user found')
+      }
+
+      const { name } = request.params
+
+      const room = await Room.findOne(
+        { where: { name } }
+      )
+
+      const updated = await user
+        .update({ roomId: room.id })
+
+      response.send(updated)
+    }
+  )
+
+  return router
 }
-
-
 
 module.exports = roomFactory

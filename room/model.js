@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const db = require('../db')
 
-console.log('model test')
+const User = require('../user/model')
 
 const Room = db.define('room',{
     name: {
@@ -13,4 +13,5 @@ const Room = db.define('room',{
       tableName: 'room'
     })
 
+   
 module.exports = Room
