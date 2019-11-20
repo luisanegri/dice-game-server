@@ -1,62 +1,59 @@
 const { Router } = require('express');
 const Room = require('./model');
+const User = require('../user/model');
+const auth = require('../auth/middleware');
 
 function roomFactory(stream) {
-  const router = new Router()
+  const router = new Router();
 
-  router.post(
-    '/room',
-    async (request, response) => {
-      const room = await Room
-        .create(request.body)
+  router.post('/room', async (request, response) => {
+    const room = await Room.create(request.body);
 
-      const action = {
-        type: 'ROOM',
-        payload: room
-      }
+    const action = {
+      type: 'ROOM',
+      payload: room
+    };
+    const string = JSON.stringify(action);
 
-      const string = JSON
-        .stringify(action)
+    stream.send(string);
 
-      stream.send(string)
+    // Just for testing
+    response.send(room);
+  });
 
-      // Just for testing
-      response.send(room)
+  router.put('/join', auth, async (req, res) => {
+    const { user } = req;
+
+    res.send(user);
+  });
+
+  //http PUT :4000/join/Room authorization:'Bearer *INSERT JWT CREATED WHEN LOGGED IN*'
+  router.put('/join/:name', auth, async (req, res, next) => {
+    const { user } = req;
+
+    if (!user) {
+      return next('No user found');
     }
-  )
 
-  router.put(
-    '/join/:name',
-    async (request, response, next) => {
-      const userId = 1
+    const { name } = req.params;
 
-      const user = await User
-        .findByPk(userId)
+    const room = await Room.findOne({ where: { name } });
 
-      
+    const updatedUser = await user.update({ roomId: room.id });
 
-      // If you use the auth middleware, you only need this
-      // const { user } = request
-      //
+    const rooms = await Room.findAll({ include: [User] });
 
-      if (!user) {
-        return next('No user found')
-      }
+    const action = {
+      type: 'Rooms',
+      payload: rooms
+    };
 
-      const { name } = request.params
+    const string = JSON.stringify(action);
+    stream.send(string);
+    res.send(updatedUser);
+  });
 
-      const room = await Room.findOne(
-        { where: { name } }
-      )
-
-      const updated = await user
-        .update({ roomId: room.id })
-
-      response.send(updated)
-    }
-  )
-
-  return router
+  return router;
 }
 
 module.exports = roomFactory;
