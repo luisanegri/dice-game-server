@@ -26,7 +26,7 @@ function roomFactory(stream) {
 
     res.send(user);
   });
-
+  // hellos
   //http PUT :4000/join/Room authorization:'Bearer *INSERT JWT CREATED WHEN LOGGED IN*'
   router.put('/join/:name', auth, async (req, res, next) => {
     const { user } = req;
