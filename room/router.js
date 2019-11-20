@@ -35,10 +35,6 @@ function roomFactory(stream) {
 
       
 
-      // If you use the auth middleware, you only need this
-      // const { user } = request
-      //
-
       if (!user) {
         return next('No user found')
       }
@@ -52,11 +48,24 @@ function roomFactory(stream) {
       const updated = await user
         .update({ roomId: room.id })
 
+      const rooms = await Room
+        .findAll({ include: [User, Game] })
+
+      const action = {
+        type: 'ROOMS',
+        payload: rooms
+      }
+
+      const string = JSON
+        .stringify(action)
+
+      stream.send(string)
+
       response.send(updated)
     }
   )
-
   return router
 }
+
 
 module.exports = roomFactory;
