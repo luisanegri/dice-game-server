@@ -8,9 +8,12 @@ const User = require ('./user/model')
 const Sse = require('json-sse');
 const roomFactory = require('./room/router');
 const Room = require('./room/model');
+const gameFactory = require('./game/router')
+const Game = require('./game/model')
 
 const stream = new Sse();
 const roomRouter = roomFactory(stream);
+const gameRouter= gameFactory(stream);
 const cors = require('cors');
 
 const port = process.env.PORT || 4000;
@@ -18,11 +21,11 @@ const corsMiddleware = cors()
 
 
 
-app.use(parser)
 app.use(corsMiddleware)
+app.use(parser)
 app.use(roomRouter)
+app.use(gameRouter)
 app.use(JwtRouter)
-
 app.use(userRouter)
 
 
@@ -33,7 +36,7 @@ app.get(
   '/stream',
   async (request, response) => {
     const rooms = await Room.findAll({
-      include:[User]
+      include:[User, Game]
     })
 
     const action = {
@@ -49,6 +52,8 @@ app.get(
     stream.init(request, response)
   }
 )
+
+
 
 
 

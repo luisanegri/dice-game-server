@@ -41,19 +41,24 @@ function roomFactory(stream) {
 
     const updatedUser = await user.update({ roomId: room.id });
 
-    const rooms = await Room.findAll({ include: [User] });
+    const rooms = await Room
+        .findAll({ include: [User, Game] })
 
     const action = {
       type: 'UPDATE_ROOMS',
       payload: rooms
     };
 
-    const string = JSON.stringify(action);
-    stream.send(string);
-    res.send(updatedUser);
-  });
+      const string = JSON
+        .stringify(action)
 
+      stream.send(string)
+
+      res.send(updatedUser);
+    }
+  )
   return router;
-}
+  };
+
 
 module.exports = roomFactory;
