@@ -12,8 +12,24 @@ const gameFactory = require('./game/router')
 const Game = require('./game/model')
 
 const stream = new Sse();
-const roomRouter = roomFactory(stream);
-const gameRouter= gameFactory(stream);
+
+async function update () {
+  const rooms = await Room
+      .findAll({ include: [User, Game] }) // ALWAYS INCLUDE EVERYTHING
+
+  const action = {
+    type: 'UPDATE_ROOMS',
+    payload: rooms
+  };
+
+  const string = JSON
+    .stringify(action)
+
+  stream.send(string)
+}
+
+const roomRouter = roomFactory(update);
+const gameRouter= gameFactory(update);
 const cors = require('cors');
 
 const port = process.env.PORT || 4000;
@@ -36,7 +52,7 @@ app.get(
   '/stream',
   async (request, response) => {
     const rooms = await Room.findAll({
-      include:[User, Game]
+      include: [User, Game]
     })
 
     const action = {

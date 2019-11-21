@@ -15,10 +15,18 @@ const User = db.define('user',{
         type: Sequelize.STRING,
         allowNull: false
       },
-    }, {
-      timestamps: false,
-      tableName: 'users'
-    })
+      score: {
+        type: Sequelize.INTEGER,
+        allowNull: true
+      },
+      currentscore: {
+        type: Sequelize.INTEGER,
+        allowNull: true
+      },
+    },{
+        timestamps: false,
+        tableName: 'game'
+      })
 
     
     
