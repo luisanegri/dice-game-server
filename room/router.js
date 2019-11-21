@@ -44,7 +44,7 @@ function roomFactory(stream) {
     const rooms = await Room.findAll({ include: [User] });
 
     const action = {
-      type: 'Rooms',
+      type: 'UPDATE_ROOMS',
       payload: rooms
     };
 
