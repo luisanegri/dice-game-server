@@ -1,71 +1,64 @@
 const { Router } = require('express');
 const Room = require('./model');
+const User = require('../user/model');
+const auth = require('../auth/middleware');
 
 function roomFactory(stream) {
-  const router = new Router()
+  const router = new Router();
 
-  router.post(
-    '/room',
-    async (request, response) => {
-      const room = await Room
-        .create(request.body)
+  router.post('/room', async (request, response) => {
+    const room = await Room.create(request.body);
 
-      const action = {
-        type: 'ROOM',
-        payload: room
-      }
+    const action = {
+      type: 'ROOM',
+      payload: room
+    };
+    const string = JSON.stringify(action);
 
-      const string = JSON
-        .stringify(action)
+    stream.send(string);
 
-      stream.send(string)
+    // Just for testing
+    response.send(room);
+  });
 
-      // Just for testing
-      response.send(room)
+  router.put('/join', auth, async (req, res) => {
+    const { user } = req;
+
+    res.send(user);
+  });
+  // hellos
+  //http PUT :4000/join/Room authorization:'Bearer *INSERT JWT CREATED WHEN LOGGED IN*'
+  router.put('/join/:name', auth, async (req, res, next) => {
+    const { user } = req;
+
+    if (!user) {
+      return next('No user found');
     }
-  )
 
-  router.put(
-    '/join/:name',
-    async (request, response, next) => {
-      const userId = 1
+    const { name } = req.params;
 
-      const user = await User
-        .findByPk(userId)
+    const room = await Room.findOne({ where: { name } });
 
-      
+    const updatedUser = await user.update({ roomId: room.id });
 
-      if (!user) {
-        return next('No user found')
-      }
-
-      const { name } = request.params
-
-      const room = await Room.findOne(
-        { where: { name } }
-      )
-
-      const updated = await user
-        .update({ roomId: room.id })
-
-      const rooms = await Room
+    const rooms = await Room
         .findAll({ include: [User, Game] })
 
-      const action = {
-        type: 'ROOMS',
-        payload: rooms
-      }
+    const action = {
+      type: 'UPDATE_ROOMS',
+      payload: rooms
+    };
 
       const string = JSON
         .stringify(action)
 
       stream.send(string)
 
-      response.send(updated)
+      res.send(updatedUser);
     }
   )
-  return router
-}
+  return router;
+  };
 
 
 module.exports = roomFactory;
