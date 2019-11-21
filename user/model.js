@@ -25,7 +25,7 @@ const User = db.define('user',{
       },
     },{
         timestamps: false,
-        tableName: 'game'
+        tableName: 'user'
       })
 
     
