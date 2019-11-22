@@ -16,7 +16,7 @@ const stream = new Sse();
 async function update () {
   const rooms = await Room
       .findAll({ include: [User, Game], order: [
-        [{ model: User }, 'username', 'ASC'],
+        [{ model: User }, 'name', 'ASC'],
     ] }) // ALWAYS INCLUDE EVERYTHING
 
   const action = {
