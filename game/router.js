@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const Game = require('./model');
 const auth = require('../auth/middleware')
+const Room = require('../room/model')
 
 
 
@@ -20,7 +21,8 @@ function gameFactory (update) {
     const { user } = request
 
     const game = await Game.findOne({ where: { roomId: user.roomId } })
-
+    const room = await Room.findOne({ where: { id: user.roomId }, include: [User] })
+    const otherUser = room.users.find(otheruser => otheruser.id !== user.id)
     // check data
     if (!user) {
       return next('No user found');
@@ -38,6 +40,7 @@ function gameFactory (update) {
     } else {
       await user.update({ currentscore: 0 })
       await user.update({ active: false })
+      await otherUser.update({active: true})
     }
     const updated = await game.update({ dice: number })
 
