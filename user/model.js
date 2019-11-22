@@ -7,6 +7,14 @@ const User = db.define('user',{
         type: Sequelize.STRING,
         allowNull: false
       },
+    active: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true
+      },
+    winner: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+      },
       email: {
         type: Sequelize.STRING,
         allowNull: false

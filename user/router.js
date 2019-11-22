@@ -8,6 +8,8 @@ const bcryptjs = require('bcryptjs')
 router.post('/user', (req,res,next) => {
     const user = {
         name:req.body.name,
+        winner: false,
+        active: true,
         email: req.body.email,
         password: bcryptjs.hashSync(req.body.password, 10)
     }

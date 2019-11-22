@@ -28,6 +28,8 @@ async function update () {
   stream.send(string)
 }
 
+
+
 const roomRouter = roomFactory(update);
 const gameRouter= gameFactory(update);
 const cors = require('cors');
