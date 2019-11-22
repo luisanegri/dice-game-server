@@ -7,6 +7,10 @@ const auth = require('../auth/middleware');
 function roomFactory(update) {
   const router = new Router();
 
+
+  
+
+
   router.post('/room', async (request, response) => {
     const room = await Room.create(request.body);
     await Game.create({ roomId: room.id })
