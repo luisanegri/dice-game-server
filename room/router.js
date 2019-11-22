@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const Game = require('../game/model')
 const Room = require('./model');
 const User = require('../user/model');
 const auth = require('../auth/middleware');
@@ -8,6 +9,7 @@ function roomFactory(update) {
 
   router.post('/room', async (request, response) => {
     const room = await Room.create(request.body);
+    await Game.create({ roomId: room.id })
 
     await update()
 

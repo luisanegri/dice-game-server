@@ -16,6 +16,8 @@ function gameFactory (update) {
     //
     const { user } = request
 
+    console.log('user test:', user)
+
     const game = await Game.findOne({ where: { roomId: user.roomId } })
 
     // check data
@@ -27,9 +29,9 @@ function gameFactory (update) {
       return next('This user is not playing a game')
     }
 
-    const number = Math.ceiling(Math.random() * 6)
+    const number = Math.ceil(Math.random() * 6)
 
-    await user.update({ currentScore: user.currentScore + number })
+    await user.update({ currentscore: user.currentscore + number })
 
     const updated = await game.update({ dice: number })
 
